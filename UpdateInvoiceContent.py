@@ -21,6 +21,17 @@ def updateInvoiceNumber(cellText):
 
 # Receive current invoice date and return the next invoice date
 def getNewInvoiceDate(currentInvoiceDate):
+    newInvoiceDate = getNewInvoiceDateForDescription(currentInvoiceDate)
+
+    # verify if the new date is on a weekend, if yes move the first week day
+    weekDay = newInvoiceDate.isoweekday() #Monday = 1 ... Sunday = 7
+    if weekDay >= 6:
+        deltaDays = weekDay - 5
+        newInvoiceDate = newInvoiceDate - timedelta(days=deltaDays)
+
+    return newInvoiceDate
+
+def getNewInvoiceDateForDescription(currentInvoiceDate):
     newInvoiceDate = datetime(currentInvoiceDate.year, currentInvoiceDate.month, currentInvoiceDate.day)
 
     # verify what is the last day of the month of the current invoice month
@@ -45,7 +56,7 @@ def getNewInvoiceDescription(currentDescription):
     
     # get the last date on the description and calculates the new initial and last date
     lastDescriptionDate = datetime.strptime(descriptionDates[1], "%B %d, %Y")
-    newDescriptionLastDate = getNewInvoiceDate(lastDescriptionDate)
+    newDescriptionLastDate = getNewInvoiceDateForDescription(lastDescriptionDate)
     initialDay = 15 if newDescriptionLastDate.day > 15 else 1
     newDescriptionInitialDate = datetime(newDescriptionLastDate.year, newDescriptionLastDate.month, initialDay)
     

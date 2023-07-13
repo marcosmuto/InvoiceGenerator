@@ -12,23 +12,41 @@ class TestInvoiceFiles(unittest.TestCase):
 
         self.assertEqual(newText, "INVOICE #24")        
 
-    def testGetNewInvoiceDate_mid_of_month(self):
-        currentDateTime = datetime(2022, 10, 15)
-
-        newCurrentDateTime = getNewInvoiceDate(currentDateTime)
-
-        self.assertEqual(newCurrentDateTime.year, 2022)
-        self.assertEqual(newCurrentDateTime.month, 10)
-        self.assertEqual(newCurrentDateTime.day, 31)
-
     def testGetNewInvoiceDate_end_of_month(self):
-        currentDateTime = datetime(2022, 10, 31)
+        currentDateTime = datetime(2022, 8, 31)
 
         newCurrentDateTime = getNewInvoiceDate(currentDateTime)
 
         self.assertEqual(newCurrentDateTime.year, 2022)
-        self.assertEqual(newCurrentDateTime.month, 11)
+        self.assertEqual(newCurrentDateTime.month, 9)
         self.assertEqual(newCurrentDateTime.day, 15)
+
+    def testGetNewInvoiceDate_mid_of_month(self):
+        currentDateTime = datetime(2022, 9, 15)
+
+        newCurrentDateTime = getNewInvoiceDate(currentDateTime)
+
+        self.assertEqual(newCurrentDateTime.year, 2022)
+        self.assertEqual(newCurrentDateTime.month, 9)
+        self.assertEqual(newCurrentDateTime.day, 30)
+
+    def testGetNewInvoiceDate_next_on_saturday(self):
+        currentDateTime = datetime(2023, 3, 31)
+
+        newCurrentDateTime = getNewInvoiceDate(currentDateTime)
+
+        self.assertEqual(newCurrentDateTime.year, 2023)
+        self.assertEqual(newCurrentDateTime.month, 4)
+        self.assertEqual(newCurrentDateTime.day, 14)
+
+    def testGetNewInvoiceDate_next_on_sunday(self):
+        currentDateTime = datetime(2023, 4, 15)
+
+        newCurrentDateTime = getNewInvoiceDate(currentDateTime)
+
+        self.assertEqual(newCurrentDateTime.year, 2023)
+        self.assertEqual(newCurrentDateTime.month, 4)
+        self.assertEqual(newCurrentDateTime.day, 28)
 
     def testGetNewInvoiceDate_next_year(self):
         currentDateTime = datetime(2022, 12, 31)
@@ -37,7 +55,7 @@ class TestInvoiceFiles(unittest.TestCase):
 
         self.assertEqual(newCurrentDateTime.year, 2023)
         self.assertEqual(newCurrentDateTime.month, 1)
-        self.assertEqual(newCurrentDateTime.day, 15)
+        self.assertEqual(newCurrentDateTime.day, 13)
 
     def testGetNewInvoiceDescription_mid_of_month(self):
         description = "Contractor Costs (Informatics Consultancy Services) October 15, 2022 – October 31, 2022 – Marcos Muto"
@@ -50,3 +68,15 @@ class TestInvoiceFiles(unittest.TestCase):
         newDescription = getNewInvoiceDescription(description)
 
         self.assertEqual(newDescription, "Contractor Costs (Informatics Consultancy Services) October 15, 2022 – October 31, 2022 – Marcos Muto")
+
+    def testGetNewInvoiceDescription_mid_of_month_on_weekend(self):
+        description = "Contractor Costs (Informatics Consultancy Services) March 15, 2023 – March 31, 2023 – Marcos Muto"
+        newDescription = getNewInvoiceDescription(description)
+
+        self.assertEqual(newDescription, "Contractor Costs (Informatics Consultancy Services) April 1, 2023 – April 15, 2023 – Marcos Muto")
+
+    def testGetNewInvoiceDescription_end_of_month_on_weekend(self):
+        description = "Contractor Costs (Informatics Consultancy Services) April 1, 2023 – April 15, 2023 – Marcos Muto"
+        newDescription = getNewInvoiceDescription(description)
+
+        self.assertEqual(newDescription, "Contractor Costs (Informatics Consultancy Services) April 15, 2023 – April 30, 2023 – Marcos Muto")
