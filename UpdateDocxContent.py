@@ -4,7 +4,7 @@ from UpdateInvoiceContent import getNewInvoiceDescription, updateInvoiceNumber
 
 # Wont create unit test for this function as it uses out of the box docx elements
 # also the dependable functions to update the content as covered            
-def updateInvoice(documentFileName):
+def updateInvoiceContent(documentFileName):
     
     invoice = Document(documentFileName)
 

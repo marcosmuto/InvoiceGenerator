@@ -161,3 +161,6 @@ cython_debug/
 
 #sample files
 sample/
+
+#config files
+config.ini
