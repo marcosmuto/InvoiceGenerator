@@ -25,10 +25,19 @@ month_on_spreadsheet = {
 }
 
 today = datetime.now()
-yesterday = today - timedelta(days=1)
 
-rate = getExchangeRate(yesterday)
-print("Exchange rate: " + str(rate))
+rate_value = 0
+pull_rate_tries = 0
+rate_date = today
+# exchange rates are not computed during the weekend or holidays
+# so it tries to pull from yesterday to 7 days earlier until finds a value
+# if today is Monday, tries Sunday, Saturday and Friday, if Friday was a holiday, try ealier until a workday.
+while (rate_value == 0 and pull_rate_tries < 7):
+    rate_date = rate_date - timedelta(days=1)
+    rate_value = getExchangeRate(rate_date)
+    pull_rate_tries += 1
+
+print("Exchange rate: " + str(rate_value) + " on date: " + rate_date.strftime("%d/%m/%y"))
 
 MID_MONTH_PTAX_ROW = 13
 END_MONTH_PTAX_ROW = 14
@@ -53,14 +62,14 @@ worksheet = workBook.Sheets[CURRENT_SHEET_NAME]
 nf_value = 0
 # Set PTAX date and rate
 if today.day <= 15:
-    worksheet.Cells(MID_MONTH_PTAX_ROW, PTAX_DATE_COLUMN).Value = yesterday.strftime("%d/%b")
-    worksheet.Cells(MID_MONTH_PTAX_ROW, PTAX_RATE_COLUMN).Value = rate
+    worksheet.Cells(MID_MONTH_PTAX_ROW, PTAX_DATE_COLUMN).Value = rate_date.strftime("%d/%b")
+    worksheet.Cells(MID_MONTH_PTAX_ROW, PTAX_RATE_COLUMN).Value = rate_value
 
     worksheet.Cells(MID_MONTH_NF_ROW, NF_DATE_COLUMN).Value = today.strftime("%d/%m/%y")
     nf_value = worksheet.Cells(MID_MONTH_NF_ROW, NF_VALUE_COLUMN).Value
 else:
-    worksheet.Cells(END_MONTH_PTAX_ROW, PTAX_DATE_COLUMN).Value = yesterday.strftime("%d/%b")
-    worksheet.Cells(END_MONTH_PTAX_ROW, PTAX_RATE_COLUMN).Value = rate
+    worksheet.Cells(END_MONTH_PTAX_ROW, PTAX_DATE_COLUMN).Value = rate_date.strftime("%d/%b")
+    worksheet.Cells(END_MONTH_PTAX_ROW, PTAX_RATE_COLUMN).Value = rate_value
 
     worksheet.Cells(END_MONTH_NF_ROW, NF_DATE_COLUMN).Value = today.strftime("%d/%m/%y")
     nf_value = worksheet.Cells(END_MONTH_NF_ROW, NF_VALUE_COLUMN).Value

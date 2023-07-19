@@ -13,7 +13,7 @@ def getExchangeRate(date):
 
     if response:
         json_response = response.json()
+        if len(json_response['value']) > 0:
+            exchangeRate = json_response['value'][0]['cotacaoVenda']
 
-        exchangeRate = json_response['value'][0]['cotacaoVenda']
-
-        return exchangeRate
+    return exchangeRate
