@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from InvoiceFiles import createNewInvoiceFile, getLastInvoiceFile
+from InvoiceFileHandler import InvoiceFileHandler
 
 class TestInvoiceFiles(unittest.TestCase):
 
@@ -10,7 +10,9 @@ class TestInvoiceFiles(unittest.TestCase):
     def testGetLastInvoiceFile_no_file_on_folder(self):
         #no test setup
 
-        invoiceFile, invoiceNumber = getLastInvoiceFile(self.TEST_FILE_PATH)
+        fileHandler = InvoiceFileHandler(self.TEST_FILE_PATH)
+        invoiceFile = fileHandler.GetLastInvoiceFile()
+        invoiceNumber = fileHandler.GetLastInvoiceNumber()
 
         self.assertEqual(invoiceFile, None)
         self.assertEqual(invoiceNumber, 0)
@@ -22,7 +24,10 @@ class TestInvoiceFiles(unittest.TestCase):
         f = open(self.TEST_FILE_PATH + "//" + testInvoiceName, "x")
         f.close()
 
-        invoiceFile, invoiceNumber = getLastInvoiceFile(self.TEST_FILE_PATH)
+        fileHandler = InvoiceFileHandler(self.TEST_FILE_PATH)
+        invoiceFile = fileHandler.GetLastInvoiceFile()
+        invoiceNumber = fileHandler.GetLastInvoiceNumber()
+
         self.assertEqual(invoiceFile, testInvoiceName)
         self.assertEqual(invoiceNumber, testInvoiceNumber)
 
@@ -39,7 +44,10 @@ class TestInvoiceFiles(unittest.TestCase):
         f = open(self.TEST_FILE_PATH + "//" + testInvoiceName, "x")
         f.close()
 
-        invoiceFile, invoiceNumber = getLastInvoiceFile(self.TEST_FILE_PATH)
+        fileHandler = InvoiceFileHandler(self.TEST_FILE_PATH)
+        invoiceFile = fileHandler.GetLastInvoiceFile()
+        invoiceNumber = fileHandler.GetLastInvoiceNumber()
+
         self.assertEqual(invoiceFile, testInvoiceName)
         self.assertEqual(invoiceNumber, testInvoiceNumber)
 
@@ -54,7 +62,11 @@ class TestInvoiceFiles(unittest.TestCase):
         f = open(self.TEST_FILE_PATH + "//" + testInvoiceName, "x")
         f.close()
 
-        newInvoiceFile, newInvoiceNumber = createNewInvoiceFile(self.TEST_FILE_PATH, testInvoiceName, testInvoiceNumber)
+        fileHandler = InvoiceFileHandler(self.TEST_FILE_PATH)
+        fileHandler.CreateNewInvoiceFile()
+        newInvoiceFile = fileHandler.GetNewInvoiceFile()
+        newInvoiceNumber = fileHandler.GetNewInvoiceNumber()
+        
         
         self.assertEqual(newInvoiceFile, "invoice " + str(testInvoiceNumber + 1) + ".docx")
         self.assertEqual(newInvoiceNumber, testInvoiceNumber + 1)

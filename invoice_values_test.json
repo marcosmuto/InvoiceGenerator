@@ -1,0 +1,10 @@
+{
+    "base": {
+        "John Doe": 100.00,
+        "Jane Doe": 90.10
+    },
+    "bonus": {
+        "John Doe": 1.23,
+        "Jane Doe": 0
+    }
+}

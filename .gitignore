@@ -164,5 +164,6 @@ sample/
 
 #config files
 config.ini
+invoice_values.json
 
 test.py

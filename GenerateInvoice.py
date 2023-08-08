@@ -1,30 +1,27 @@
-import os
-import configparser
+from InvoiceFileHandler import InvoiceFileHandler
+from InvoiceContentUpdate import InvoiceContentUpdate
+#from EmailSender import sendInvoiceByEmail
 
-from InvoiceFiles import createNewInvoiceFile, getLastInvoiceFile
-from UpdateDocxContent import updateInvoiceContent
-from UpdateDocxDateComponent import updateDocxDate
-from ConvertDocToPDF import convertDocToPDF
-from EmailSender import sendInvoiceByEmail
+class GenerateInvoice:
 
-config = configparser.ConfigParser()
-config.read("config.ini")
+    def __init__(self, config):
+        self.config = config
 
-INVOICE_PATH = config.get('invoice', 'invoice_path')
+    def Generate(self):
+        INVOICE_PATH = self.config.get('invoice', 'invoice_path')
+        INVOICE_VALUE_FILE = self.config.get('invoice', 'values_file')
 
-# create the invoice file based on the last invoice file
-lastInvoiceFile, lastInvoiceNumber = getLastInvoiceFile(INVOICE_PATH)
-newInvoiceFileName, newInvoiceNumber = createNewInvoiceFile(INVOICE_PATH, lastInvoiceFile, lastInvoiceNumber)
+        # create the invoice file based on the last invoice file
+        invoiceHandler = InvoiceFileHandler(INVOICE_PATH)
+        invoiceHandler.CreateNewInvoiceFile()
+        
+        #update the invoice content
+        wordFile = INVOICE_PATH + "//" + invoiceHandler.GetNewInvoiceFile()
+        InvoiceContentUpdate(wordFile, INVOICE_VALUE_FILE).UpdateInvoiceContent()
 
-#update the invoice content
-wordFile = INVOICE_PATH + "//" + newInvoiceFileName
-updateInvoiceContent(wordFile)
-updateDocxDate(wordFile)
+        #convert invoice docx document to pdf
+        invoiceHandler.ConvertDocToPDF(wordFile)
+        pdfFile = wordFile.replace(".docx", ".pdf")
+        print("PDF version generated: " + pdfFile)
 
-#convert invoice docx document to pdf
-if (os.path.exists(wordFile)):
-    convertDocToPDF(wordFile)
-
-pdfFile = wordFile.replace(".docx", ".pdf")
-
-sendInvoiceByEmail(newInvoiceNumber, pdfFile)
+        #sendInvoiceByEmail(newInvoiceNumber, pdfFile)
