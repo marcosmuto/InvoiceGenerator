@@ -21,7 +21,7 @@ def main():
     print("Starting execution with config file: " + config_file)
 
     new_invoice_pdf_file, new_invoice_number = GenerateInvoice(config).Generate()
-    #EmailSender(config).SendInvoice(new_invoice_number, new_invoice_pdf_file)
+    EmailSender(config).SendInvoice(new_invoice_number, new_invoice_pdf_file)
 
     cashFlowFile = CashFlowFileUpdater(config)
     cashFlowFile.OpenSpreasheet()

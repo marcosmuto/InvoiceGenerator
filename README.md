@@ -11,9 +11,11 @@
 # Usage
 
 `py main.py [config_file]`
+
 If config file is not present, try to use the file config_test.ini
 
 Example:
+
 `py main.py config.ini`
 
 # Requirements
