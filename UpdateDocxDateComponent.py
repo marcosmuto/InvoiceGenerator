@@ -15,6 +15,8 @@ class UpdateDateComponent:
 
     # main function to update the date component on the docx document
     def UpdateDocxDate(self):
+        print("Updating docx date")
+
         # temporary directory to store the files from the unziped docx
         tempdir = "tempZip"
 

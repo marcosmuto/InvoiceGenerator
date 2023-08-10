@@ -6,5 +6,9 @@
     "bonus": {
         "John Doe": 1.23,
         "Jane Doe": 0
+    },
+    "position": {
+        "John Doe": 2,
+        "Jane Doe": 1
     }
 }

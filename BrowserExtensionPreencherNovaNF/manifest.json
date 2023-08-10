@@ -1,0 +1,20 @@
+{
+    "name": "Preenche NF-e",
+    "version": "1.0.0.0",
+    "manifest_version": 3,
+    "description": "Preenche uma nova NF-e com dados armazenados em json.",
+	"content_scripts": [
+        {
+            "matches": [
+              "https://nfe.prefeitura.sp.gov.br/contribuinte/nota.aspx"
+            ],
+            "js": ["content-scripts/content.js"]
+        }
+    ],
+	"web_accessible_resources": [
+		{
+			"resources": ["data.json"],
+			"matches": ["<all_urls>"]
+		}
+	]
+}

@@ -44,17 +44,9 @@ class InvoiceContentUpdate:
                         current_invoice_name = "Total"
 
                     if cell.text.startswith("$"):
-                        invoice_value = "${:,.2f}".format(self.__GetInvoiceValue(current_invoice_name, invoice_values))
+                        invoice_value = "${:,.2f}".format(invoice_values[current_invoice_name].value)
                         cell.paragraphs[0].text = invoice_value
                         print("Updated invoice value {:>25} - {}".format(current_invoice_name, invoice_value))
 
         invoice.save(self.__invoice_file_name)
 
-    def __GetInvoiceValue(self, name, invoice_values):
-        value = 0.0
-
-        for invoice_value in invoice_values:
-            if invoice_value.name == name:
-                value = invoice_value.value
-
-        return value

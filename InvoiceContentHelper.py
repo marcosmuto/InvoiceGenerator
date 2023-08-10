@@ -8,11 +8,11 @@ class InvoiceContentHelper:
 
     """
     Read the json file with the invoice values per person
-    Returns a list with a tuple with values and the invoice total
+    Returns a dict with a tuple with values and the invoice total
     """
     def LoadInvoiceValues(self, invoice_values_file):
-        InvoiceValue = namedtuple('InvoiceValue', ['name', 'value'])
-        invoice_values = []
+        InvoiceValue = namedtuple('InvoiceValue', ['name', 'value', 'position'])
+        invoice_values = {}
 
         with open(invoice_values_file, encoding="UTF-8") as values_file:
             values_content = values_file.read()
@@ -24,10 +24,14 @@ class InvoiceContentHelper:
                 if (name in names_values['bonus']):
                     invoice_value += float(names_values['bonus'][name])
                 
+                #position on the cash flow spreasheet
+                position = int(names_values['position'][name])
+                
                 total += invoice_value
-                invoice_values.append(InvoiceValue(name, invoice_value))
+                invoice_values[name] = InvoiceValue(name, invoice_value, position)
 
-            invoice_values.append(InvoiceValue("Total", total))
+            #store the total in the invoice list with position 0
+            invoice_values["Total"] = InvoiceValue("Total", total, 0)
 
         return invoice_values
 

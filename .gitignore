@@ -165,5 +165,5 @@ sample/
 #config files
 config.ini
 invoice_values.json
-
+BrowserExtensionPreencherNovaNF/data.json
 test.py

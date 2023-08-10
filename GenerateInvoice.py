@@ -1,6 +1,6 @@
 from InvoiceFileHandler import InvoiceFileHandler
 from InvoiceContentUpdate import InvoiceContentUpdate
-#from EmailSender import sendInvoiceByEmail
+from UpdateDocxDateComponent import UpdateDateComponent
 
 class GenerateInvoice:
 
@@ -18,10 +18,11 @@ class GenerateInvoice:
         #update the invoice content
         wordFile = INVOICE_PATH + "//" + invoiceHandler.GetNewInvoiceFile()
         InvoiceContentUpdate(wordFile, INVOICE_VALUE_FILE).UpdateInvoiceContent()
+        UpdateDateComponent(wordFile).UpdateDocxDate()
 
         #convert invoice docx document to pdf
         invoiceHandler.ConvertDocToPDF(wordFile)
         pdfFile = wordFile.replace(".docx", ".pdf")
         print("PDF version generated: " + pdfFile)
 
-        #sendInvoiceByEmail(newInvoiceNumber, pdfFile)
+        return pdfFile, invoiceHandler.GetNewInvoiceNumber()
