@@ -10,6 +10,7 @@ fetch(values_url)
 		enter_value("ctl00_body_tbRazaoSocial", json.razao);
 		enter_value("ctl00_body_tbLogradouro", json.logradouro);
 		enter_value("ctl00_body_tbDiscriminacao", json.discriminacao);
+		enter_value("ctl00_body_tbServEncerradoCodigo", json.codigo_servico);
 		enter_value("ctl00_body_tbValor", json.valor);
 		}
 	);
