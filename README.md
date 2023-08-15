@@ -22,5 +22,5 @@ Example:
 
 Modules are described on `install_dependencies.sh` file
 
-**IMPORTANT** Microsoft Excel and Outlook is required to update the cash flow file and send email. Scripts uses the win32com lib to manipulate the MS apps.
+**IMPORTANT** Microsoft Excel and Outlook are required to update the cash flow file and send email. Scripts uses the win32com lib to manipulate the MS apps.
 
