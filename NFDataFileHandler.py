@@ -17,7 +17,7 @@ class NFDataFileHandler():
 
         description = nf_data["discriminacao"]
         nf_data["discriminacao"] = re.sub("\d+", str(invoice_number), description)
-        nf_data["valor"] = value
+        nf_data["valor"] = "{:.2f}".format(value)
 
         with open(self.NF_DATA_FILE, mode="w+t", encoding="UTF-8") as nf_file:
             json.dump(nf_data, fp=nf_file, ensure_ascii=False, indent=4)
