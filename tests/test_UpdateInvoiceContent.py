@@ -59,6 +59,15 @@ class TestInvoiceFiles(unittest.TestCase):
         self.assertEqual(newCurrentDateTime.month, 1)
         self.assertEqual(newCurrentDateTime.day, 13)
 
+    def testGetNewInvoiceDate_last_day_on_weekend(self):
+        currentDateTime = datetime(2023, 9, 29)
+
+        newCurrentDateTime = self.invoiceContentHelper.GetNewInvoiceDate(currentDateTime)
+
+        self.assertEqual(newCurrentDateTime.year, 2023)
+        self.assertEqual(newCurrentDateTime.month, 10)
+        self.assertEqual(newCurrentDateTime.day, 13)
+
     def testGetNewInvoiceDescription_mid_of_month(self):
         description = "Contractor Costs (Informatics Consultancy Services) October 15, 2022 – October 31, 2022 – Marcos Muto"
         newDescription = self.invoiceContentHelper.GetNewInvoiceDescription(description)
@@ -88,3 +97,4 @@ class TestInvoiceFiles(unittest.TestCase):
         name = self.invoiceContentHelper.GetContractorName(description)
 
         self.assertEqual(name, "Marcos Muto")
+    

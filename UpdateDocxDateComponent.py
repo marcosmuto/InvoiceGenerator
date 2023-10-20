@@ -56,6 +56,7 @@ class UpdateDateComponent:
             newInvoiceDate = self.contentHelper.GetNewInvoiceDate(invoiceDate)
             newInvoiceDateTag = invoiceDateTag.replace(inovoiceDateExtracted, newInvoiceDate.strftime("%Y-%m-%d"))
 
+            print("Replacing Date Tag {} - {}".format(invoiceDateTag, newInvoiceDateTag))
             newDocXml = xml_data.replace(invoiceDateTag, newInvoiceDateTag)
 
             # Update the text tag
@@ -65,6 +66,7 @@ class UpdateDateComponent:
             
             newInvoiceTextTag = invoiceTextTag.replace(invoiceTextExtracted, newInvoiceDate.strftime("%B %d, %Y"))
 
+            print("Replacing Text Tag {} - {}".format(invoiceTextTag, newInvoiceTextTag))
             newDocXml = newDocXml.replace(invoiceTextTag, newInvoiceTextTag)
 
             return newDocXml

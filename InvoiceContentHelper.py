@@ -77,7 +77,7 @@ class InvoiceContentHelper:
 
         # verify what is the last day of the month of the current invoice month
         lastDayOfInvoiceMonth = calendar.monthrange(currentInvoiceDate.year, currentInvoiceDate.month)[1]
-        if currentInvoiceDate.day == lastDayOfInvoiceMonth:
+        if currentInvoiceDate.day > 15 and currentInvoiceDate.day <= lastDayOfInvoiceMonth:
             # is last day of the month, so add some days to jump to the next month
             nextMonthDate = currentInvoiceDate + timedelta(days=10)
             newInvoiceDate = datetime(nextMonthDate.year, nextMonthDate.month, 15)

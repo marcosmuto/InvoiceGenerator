@@ -1,5 +1,8 @@
 import sys
 import configparser
+import traceback
+
+from datetime import datetime
 
 from GenerateInvoice import GenerateInvoice
 from EmailSender import EmailSender
@@ -27,13 +30,24 @@ def main():
         new_invoice_pdf_file, new_invoice_number = GenerateInvoice(config).Generate()
         EmailSender(config).SendInvoice(new_invoice_number, new_invoice_pdf_file)
 
-        cashFlowFile = CashFlowFileUpdater(config)
-        cashFlowFile.OpenSpreasheet()
-        cashFlowFile.UpdateInvoiceValue()
-        nf_value = cashFlowFile.UpdateExchangeRate()
-        cashFlowFile.SaveAndClose()
+        #new_invoice_number = 252
+        #currentDateTime = datetime(2023, 10, 13)
+        currentDateTime = datetime.now()
 
-        NFDataFileHandler(config).UpdateFile(new_invoice_number, nf_value)
+        cashFlowFile = CashFlowFileUpdater(config, currentDateTime)
+        try:
+            cashFlowFile.OpenSpreasheet()
+            cashFlowFile.UpdateInvoiceValue()
+            cashFlowFile.UpdateExchangeRate()
+            nf_value = cashFlowFile.GetNFValue()
+            cashFlowFile.SaveAndClose()
+
+            NFDataFileHandler(config).UpdateFile(new_invoice_number, nf_value)
+        except:
+            error = traceback.format_exc()
+            print(error)
+            print("Unable to update Excel file.")
+            cashFlowFile.CloseWithoutSave()
 
         print("Completed")
         input("Press [ENTER] to finish")

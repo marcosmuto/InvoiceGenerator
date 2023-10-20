@@ -41,25 +41,34 @@ INVOICE_TOTAL_ROW = 6
 
 class CashFlowFileUpdater:
 
-    def __init__(self, config):
+    def __init__(self, config, currentDateTime):
         self.__config = config
         self.SPREADSHEET_FILE = config.get('nf_data', 'spreadsheet_path')
-        self.today = datetime.now()
+        self.today = currentDateTime
 
     def OpenSpreasheet(self):
         CURRENT_SHEET_NAME = MONTH_MAP[self.today.strftime("%m")] + "_" + self.today.strftime("%Y")
 
         self.excelApp = win32com.client.Dispatch("Excel.Application")
+        # avoid the prompt "This workbook contains one or more links that cannot be updated."
+        self.excelApp.AskToUpdateLinks = False
+        self.excelApp.DisplayAlerts = False
         self.excelApp.Visible = False
 
         print("Updating file: " + self.SPREADSHEET_FILE)
-        self.workBook = self.excelApp.Workbooks.Open(self.SPREADSHEET_FILE)
+        #Don't update the "impostos" sheet links, refer to link below for details
+        #https://stackoverflow.com/questions/64502450/update-links-using-win32com-where-excel-is-linked-with-multiple-sources
+        self.workBook = self.excelApp.Workbooks.Open(self.SPREADSHEET_FILE, UpdateLinks=0)
         print("Updating sheet: " + CURRENT_SHEET_NAME)
         self.worksheet = self.workBook.Sheets[CURRENT_SHEET_NAME]
 
     def SaveAndClose(self):
         self.workBook.Save()
         self.workBook.Close()
+        self.excelApp.Quit()
+
+    def CloseWithoutSave(self):
+        self.workBook.Close(SaveChanges = False)
         self.excelApp.Quit()
 
     def UpdateInvoiceValue(self):
@@ -95,23 +104,29 @@ class CashFlowFileUpdater:
 
         print("Exchange rate: {} on date: {}".format(rate_value, rate_date.strftime("%d/%m/%y")))
 
-        nf_value = 0
         # Set PTAX date and rate
         if self.today.day <= 15:
             self.worksheet.Cells(MID_MONTH_PTAX_ROW, PTAX_DATE_COLUMN).Value = rate_date.strftime("%d/%b")
             self.worksheet.Cells(MID_MONTH_PTAX_ROW, PTAX_RATE_COLUMN).Value = rate_value
 
             self.worksheet.Cells(MID_MONTH_NF_ROW, NF_DATE_COLUMN).Value = self.today.strftime("%d/%m/%y")
-            nf_value = self.worksheet.Cells(MID_MONTH_NF_ROW, NF_VALUE_COLUMN).Value
         else:
             self.worksheet.Cells(END_MONTH_PTAX_ROW, PTAX_DATE_COLUMN).Value = rate_date.strftime("%d/%b")
             self.worksheet.Cells(END_MONTH_PTAX_ROW, PTAX_RATE_COLUMN).Value = rate_value
 
             self.worksheet.Cells(END_MONTH_NF_ROW, NF_DATE_COLUMN).Value = self.today.strftime("%d/%m/%y")
+
+        print("Exchange rate update complete")
+    
+    def GetNFValue(self):
+
+        nf_value = 0
+        if self.today.day <= 15:
+            nf_value = self.worksheet.Cells(MID_MONTH_NF_ROW, NF_VALUE_COLUMN).Value
+        else:
             nf_value = self.worksheet.Cells(END_MONTH_NF_ROW, NF_VALUE_COLUMN).Value
 
         print("NF value: {:.2f}".format(nf_value))
-        print("Exchange rate update complete")
-
+        
         return round(nf_value, 2)
 

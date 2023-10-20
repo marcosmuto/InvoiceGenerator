@@ -40,8 +40,9 @@ class InvoiceFileHandler:
         if self.__last_invoice_file_name is not None:
             lastInvoiceNumberList = re.compile("\d+").findall(self.__last_invoice_file_name)    
             self.__last_invoice_number = int(lastInvoiceNumberList[0])
-
-        print("Last invoice found: " + self.__last_invoice_file_name)
+            print("Last invoice found: " + self.__last_invoice_file_name)
+        else:
+            print("Last invoice not found")
     
     # Create the new invoice file by copying the lastest file    
     def CreateNewInvoiceFile(self):
